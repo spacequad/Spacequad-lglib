@@ -1,5 +1,4 @@
 <?php
-//  $Id: cron.php 14 2010-02-19 16:33:14Z root $
 /**
 *   Allows scheduled tasks to be run outside of glFusion.
 *
@@ -10,9 +9,9 @@
 *   script can find it.
 *
 *   @author     Lee Garner <lee@leegarner.com>
-*   @copyright  Copyright (c) 2010 Lee Garner
+*   @copyright  Copyright (c) 2010-2014 Lee Garner
 *   @package    subscription
-*   @version    0.0.1
+*   @version    0.0.5
 *   @license    http://opensource.org/licenses/gpl-2.0.php 
 *               GNU Public License v2 or later
 *   @filesource

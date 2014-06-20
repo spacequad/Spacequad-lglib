@@ -205,8 +205,6 @@ function plugin_getheadercss_lglib()
         // Include the Slimbox CSS.
         'slimbox.css',
         'style.css',
-        //'font-awesome.css',
-        //'rating.css',
     );
 
     // When looking for CSS files, we'll check in this order:
