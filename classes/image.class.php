@@ -24,11 +24,13 @@ class lgImage
      *
      *  @param  integer $width New width, in pixels
      *  @param  integer $height New height, in pixels
-     *  @return array   $old_width, $old_height, $newwidth, $newheight
+     *  @return mixed   array of dimensions, or false on error
      */
     public static function reDim($orig_path, $width=0, $height=0)
     {
         $dimensions = getimagesize($orig_path);
+        if ($dimenstions === false) {
+            return false;
         $s_width = $dimensions[0];
         $s_height = $dimensions[1];
 
@@ -61,15 +63,20 @@ class lgImage
      *  @param  string  $type       Either 'thumb' or 'disp'
      *  @param  integer $newWidth   New width, in pixels
      *  @param  integer $newHeight  New height, in pixels
-     *  @return string          Blank if successful, error message otherwise.
+     *  @return string  Blank if successful, error message otherwise.
      */
     public static function ReSize($src, $dst, $newWidth=0, $newHeight=0)
     {
         global $_LGLIB_CONF;
 
         // Calculate the new dimensions
-        list($sWidth,$sHeight,$dWidth,$dHeight) = 
-            lgImage::reDim($src, $newWidth, $newHeight);
+        $A = self::reDim($src, $newWidth, $newHeight); 
+        if ($A === false) {
+            COM_errorLog("Invalid image $src");
+            return 'invalid image conversion';
+        }
+
+        list($sWidth,$sHeight,$dWidth,$dHeight) = $A;
 
         // Get the mime type for the glFusion resizing functions
         $mime_type = image_type_to_mime_type(exif_imagetype($src));
