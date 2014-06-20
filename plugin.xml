@@ -1,0 +1,10 @@
+<plugin>
+    <id>lglib</id>
+    <name>lgLib</name>
+    <description>Provides core javascript, css and functions for other plugins.</description>
+    <version>0.0.6</version>
+    <glfusionversion>1.4.0</glfusionversion>
+    <phpversion>5.3.0</phpversion>
+    <url>http://www.leegarner.com</url>
+    <maintainer>Lee Garner</maintainer>
+</plugin>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- $Id: config.html 534 2012-05-29 01:29:57Z root $ -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="../../../docs/docstyle.css" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>lgLib Plugin - glFusion CMS</title>
+</head>
+
+<body style="direction: ltr;">
+
+<div id="gl_container_fluid">
+<div id="gl_header"> <span style="color: rgb(255, 255, 255); float: left; padding-left: 10px; padding-top: 5px; vertical-align: middle;">glFusion
+Documentation Project </span> <a style="float: right; padding-right: 10px; padding-top: 5px; vertical-align: middle;" href="http://www.glfusion.org/wiki/doku.php">glFusion Wiki</a>
+</div>
+
+<div id="gl_wrapper">
+<div class="body-container">
+<h1>lgLib Configuration</h1>
+The lgLib plugin provides certain functions, javascript, and CSS that is commonly used across plugins.
+<table class="inline">
+
+  <tbody>
+    <tr>
+    <th class="col0 leftalign" colspan="2">General Settings</th>
+    </tr>
+
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_cal_style"></a>Calendar Style</td>
+      <td class="col1 leftalign">Select the visiual style to be used for the
+popup calendar.<br /><br />
+<i>After changing this option, you must clear the layout cache</i>
+  </td>
+    </tr>
+
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_img_disp_relpath"></a>Path to display images</td>
+      <td class="col1 leftalign">
+        Enter the path for the plugin to create images for display. This path is relative to the plugin's HTML directory, so the resulting image url is &quot;http://yoursite.com/lglib/path/you/enter&quot;
+      </td>
+    </tr>
+
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_cron_schedule_interval"></a>Scheduled Task Interval</td>
+      <td class="col1 leftalign">
+        This plugin includes a specialized cron.php file that can be called locally or remotely to trigger scheduled tasks. Use this if you're concerned about a) irregular execution via normal site visits, or b) have lengthy tasks to perform and don&apos;t want to penalize your site visitors.
+        <p>To use this feature, set this value to some number of seconds (e.g. 3600 for hourly jobs) and set the global site cron interval to zero. Then, via a host cron job or remote monitoring tool, execute /lglib/cron.php. For example, you could set your remote monitoring tool to call http://yoursite/lglib/cron.php every 5 minutes. All scheduled tasks will be executed from this tool rather than by your site visitors.</p>
+        <p><i>If you leave the global site cron interval set, regular scheduled tasks will be spawned by site visitors as usual. Database backup are always handled by lglib&apos;s cron handler due to the time required.</i></p>
+      </td>
+    </tr>
+
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_cron_key"></a>Scheduled Task Security Key</td>
+      <td class="col1 leftalign">
+        As a basic security measure, you can protect the scheduled task URL by providing some random string. This string must be included with the URL (as &quot;http://yoursite/lglib/cron.php?key=XXXXX&quot;) or as an argument to the command line (&quot;php lglib/cron.php XXXXX&quot;). If this value is configured but not supplied when cron.php is invoked, no action will be taken.
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

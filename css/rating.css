@@ -1,0 +1,36 @@
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  font-size: 15px;
+}
+span.reset:before {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  content: "\f056";
+  padding-right: 5px;
+  color: #999999;
+}
+.rating span.star {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+}
+.rating span.star:hover {
+  cursor: pointer;
+}
+.rating span.star:before {
+  content: "\f006";
+  padding-right: 5px;
+  color: #999999;
+}
+.rating span.star:hover:before,
+.rating span.star.filled:before,
+.rating span.star:hover ~ span.star:before {
+  content: "\f005";
+  color: #e3cf7a;
+}
+

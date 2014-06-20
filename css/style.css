@@ -1,0 +1,15 @@
+/*  $Id$
+*   Styles for the Lglib plugin.
+*/
+
+/*  Message item formats. Not defined, included here for documentation */
+.lglmessage {
+  font-size:14px;
+}
+
+.lglmessage ul
+{ }
+
+.lglmessage li
+{ }
+
