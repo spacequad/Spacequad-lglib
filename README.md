@@ -1,9 +1,6 @@
 lglib
 =====
 
-Plugin containing common javascript, css and functions for other glFusion
-plugins
-
 This plugin provides some javascript and css files that are used by other
 plugins:
 
