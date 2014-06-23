@@ -31,6 +31,8 @@ class lgImage
         $dimensions = getimagesize($orig_path);
         if ($dimenstions === false) {
             return false;
+        }
+
         $s_width = $dimensions[0];
         $s_height = $dimensions[1];
 
