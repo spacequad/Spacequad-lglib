@@ -340,10 +340,10 @@ function DBADMIN_configBackup()
     // Select only tables that we actually use
     $tablenames = array_intersect($mysql_tables, $_TABLES);
 
-    $exclude_tables = @unserialize($_VARS['lglib_db_backup_exclude']);
+    $exclude_tables = @unserialize($_VARS['lglib_dbback_exclude']);
     if (!is_array($exclude_tables))
         $exclude_tables = array($exclude_tables);
-    $curr_interval = (int)$_VARS['lglib_db_backup_interval'];
+    $curr_interval = (int)$_VARS['lglib_dbback_cron'];
     if ($curr_interval == '-1') {
         $interval_disabled = ' disbled="disabled" ';
         $disable_cron = ' checked="checked" ';
@@ -351,10 +351,10 @@ function DBADMIN_configBackup()
         $interval_disabled = '';
         $disable_cron = '';
     }
-    $chk_gzip = (isset($_VARS['lglib_db_backup_gzip']) && 
-            $_VARS['lglib_db_backup_gzip'] == 1) ? ' checked="checked" ' : '';
+    $chk_gzip = (isset($_VARS['lglib_dbback_gzip']) && 
+            $_VARS['lglib_dbback_gzip'] == 1) ? ' checked="checked" ' : '';
         
-    $max_files = (int)$_VARS['lglib_db_backup_maxfiles'];
+    $max_files = (int)$_VARS['lglib_dbback_files'];
 
     //$current_arr = @unserialize($current_str);
     //$current_arr = explode('|', $current_str);
@@ -412,25 +412,14 @@ foreach($expected as $provided) {
 
 $content = '';
 switch ($action) {
-
-/*case 'fragment':
-    $backup = new dbBackup();
-    //$backup->init();
-    //$backup->perform_backup();
-    break;*/
-
 case 'backup':
     if (SEC_checkToken()) {
-        if ($_VARS['lglib_db_backup_mysqldump']) {
+        if ($_VARS['lglib_dbback_mysqldump']) {
             $display .= DBADMIN_backup();
         } else {
             USES_lglib_class_dbbackup();
             $backup = new dbBackup();
-            //$backup->init();
-            // Header/Footer echoed here to allow backup to echo status
             $backup->perform_backup();
-            //echo COM_refresh($_SERVER['PHP_SELF']);
-            //exit;
             $backup->Purge();
             $view = 'list';
         }
@@ -479,18 +468,18 @@ case 'saveconfig':
 
     // Get the excluded tables into a serialized string
     $tables = explode('|', $_POST['groupmembers']);
-    $items['db_backup_exclude'] = DB_escapeString(@serialize($tables));
+    $items['lglib_dbback_exclude'] = DB_escapeString(@serialize($tables));
 
-    $items['db_backup_maxfiles'] = (int)$_POST['db_backup_maxfiles'];
+    $items['lglib_dbback_files'] = (int)$_POST['db_backup_maxfiles'];
 
     if (isset($_POST['disable_cron'])) {
         $str = '-1';
     } else {
         $str = (int)$_POST['db_backup_interval'];
     }
-    $items['db_backup_interval'] = $str;
+    $items['lglib_dbback_cron'] = $str;
 
-    $items['db_backup_gzip'] = isset($_POST['use_gzip']) ? 1 : 0;
+    $items['lglib_dbback_gzip'] = isset($_POST['use_gzip']) ? 1 : 0;
 
     foreach ($items as $name => $value) {
         $sql = "INSERT INTO {$_TABLES['vars']} (name, value)

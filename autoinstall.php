@@ -87,12 +87,12 @@ function plugin_autouninstall_lglib()
         'features'  => array(),
         'php_blocks' => array(),
         'vars'      => array(
-            $_LGLIB_CONF['pi_name'] . '_db_backup_exclude',
-            $_LGLIB_CONF['pi_name'] . '_db_backup_sendto',
-            $_LGLIB_CONF['pi_name'] . '_db_backup_maxfiles',
-            $_LGLIB_CONF['pi_name'] . '_db_backup_interval',
-            $_LGLIB_CONF['pi_name'] . '_db_backup_gzip',
-            $_LGLIB_CONF['pi_name'] . '_db_backup_lastrun',
+            $_LGLIB_CONF['pi_name'] . '_dbback_exclude',
+            $_LGLIB_CONF['pi_name'] . '_dbback_sendto',
+            $_LGLIB_CONF['pi_name'] . '_dbback_files',
+            $_LGLIB_CONF['pi_name'] . '_dbback_cron',
+            $_LGLIB_CONF['pi_name'] . '_dbback_gzip',
+            $_LGLIB_CONF['pi_name'] . '_dbback_lastrun',
         ),
     );
 
