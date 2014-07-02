@@ -15,10 +15,12 @@ require_once '../../../lib-common.php';
 require_once '../../auth.inc.php';
 
 $display = '';
+$pi_title = $_LGLIB_CONF['pi_display_name'] . ' ' .
+            $LANG32[36] . ' ' . $_LGLIB_CONF['pi_version'];
 
 // If user isn't a root user or if the backup feature is disabled, bail.
 if (!SEC_inGroup('Root') OR $_CONF['allow_mysqldump'] == 0) {
-    $display .= COM_siteHeader('menu', $LANG_DB_BACKUP['last_ten_backups']);
+    $display .= COM_siteHeader('menu', $pi_title);
     $display .= COM_startBlock($MESSAGE[30], '',
                     COM_getBlockTemplate('_msg_block', 'header'));
     $display .= $MESSAGE[46];
@@ -31,10 +33,14 @@ if (!SEC_inGroup('Root') OR $_CONF['allow_mysqldump'] == 0) {
 
 
 /**
-* Sort backup files with newest first, oldest last.
-* For use with usort() function.
-* This is needed because the sort order of the backup files, coming from the
-* 'readdir' function, might not be that way.
+*   Sort backup files with newest first, oldest last.
+*   For use with usort() function.
+*   This is needed because the sort order of the backup files, coming from the
+* ' readdir' function, might not be that way.
+*
+*   @param  string  $pFileA     First file to compare
+*   @param  string  $pFileB     Second filename to compare
+*   @return integer     1 if A newer than B, -1 if B newer than A, 0 if equal
 */
 function DBADMIN_compareBackupFiles($pFileA, $pFileB)
 {
@@ -49,41 +55,48 @@ function DBADMIN_compareBackupFiles($pFileA, $pFileB)
     return ($lFiletimeA > $lFiletimeB) ? -1 : 1;
 }
 
+
+/**
+*   Create the main menu
+*
+*   @param  string  $explanation    Instruction text
+*   @return string  HTML for menu area
+*/
 function DBADMIN_menu($explanation = '')
 {
-    global $_CONF, $LANG_ADMIN, $LANG_DB_BACKUP, $_IMAGE_TYPE, $token;
+    global $_CONF, $LANG_ADMIN, $LANG_DB_BACKUP, $LANG_LGLIB, $_IMAGE_TYPE,
+            $token, $pi_title;
 
     USES_lib_admin();
 
     $retval = '';
 
-        $token = SEC_createToken();
-        $menu_arr = array(
-            array('url' => $_CONF['site_admin_url'] . '/plugins/lglib/index.php',
-                  'text' => 'List Backups'),
-            array('url' => $_CONF['site_admin_url']
-                           . '/plugins/lglib/index.php?backup=x&amp;'.CSRF_TOKEN.'='.$token,
-                  'text' => $LANG_ADMIN['create_new']),
-            array('url' => $_CONF['site_admin_url'] . '/plugins/lglib/index.php?config=x',
-                'text' => 'Configure'),
-            array('url' => $_CONF['site_admin_url'],
-                  'text' => $LANG_ADMIN['admin_home']),
-        );
-        $retval .= COM_startBlock($LANG_DB_BACKUP['last_ten_backups'], '',
+    $token = SEC_createToken();
+    $menu_arr = array(
+        array('url' => LGLIB_ADMIN_URL,
+              'text' => $LANG_LGLIB['list_backups']),
+        array('url' => LGLIB_ADMIN_URL . '?backup=x&amp;'.CSRF_TOKEN.'='.$token,
+              'text' => $LANG_ADMIN['create_new']),
+        array('url' => LGLIB_ADMIN_URL . '?config=x',
+              'text' => 'Configure'),
+        array('url' => $_CONF['site_admin_url'],
+              'text' => $LANG_ADMIN['admin_home']),
+    );
+    $retval .= COM_startBlock($pi_title,
                             COM_getBlockTemplate('_admin_block', 'header'));
-        $retval .= ADMIN_createMenu(
+    $retval .= ADMIN_createMenu(
             $menu_arr, $explanation,
             $_CONF['layout_url'] . '/images/icons/database.' . $_IMAGE_TYPE
-        );
+    );
 
     return $retval;
 }
 
+
 /**
-* List all backups, i.e. all files ending in .sql
+*   List all backups, i.e. all files ending in .sql or .sql.gz
 *
-* @return   string      HTML for the list of files or an error when not writable
-*
+*   @return string  HTML for the list of files or an error when not writable
 */
 function DBADMIN_list()
 {
@@ -112,8 +125,6 @@ function DBADMIN_list()
         usort($backups, 'DBADMIN_compareBackupFiles');
 
         $data_arr = array();
-        //$thisUrl = $_CONF['site_admin_url'] . '/database.php';
-        $thisUrl = $_SERVER['PHP_SELF'];
         $diskIconUrl = $_CONF['layout_url'] . '/images/admin/disk.' . $_IMAGE_TYPE;
         $attr['title'] = $LANG_DB_BACKUP['download'];
         $alt = $LANG_DB_BACKUP['download'];
@@ -121,7 +132,7 @@ function DBADMIN_list()
         $icon_img = COM_createImage($diskIconUrl, $alt, $attr);
 
         for ($i = 0; $i < $num_backups; $i++) {
-            $downloadUrl = $thisUrl . '?download=x&amp;file='
+            $downloadUrl = LGLIB_ADMIN-URL . '?download=x&amp;file='
                          . urlencode($backups[$i]);
 
             $downloadLink = COM_createLink($icon_img, $downloadUrl, $attr);
@@ -136,26 +147,6 @@ function DBADMIN_list()
                                   'filename' => $backups[$i]);
         }
 
-        /*$token = SEC_createToken();
-        $menu_arr = array(
-            array('url' => $_CONF['site_admin_url'] . '/db-backup.php',
-                  'text' => 'List Backups'),
-            array('url' => $_CONF['site_admin_url']
-                           . '/db-backup.php?backup=x&amp;'.CSRF_TOKEN.'='.$token,
-                  'text' => $LANG_ADMIN['create_new']),
-            array('url' => $_CONF['site_admin_url'],
-                  'text' => $LANG_ADMIN['admin_home']),
-            array('url' => $_CONF['site_admin_url'] . '/db-backup.php?config=x',
-                'text' => 'Configure'),
-        );*/
-        //$retval .= COM_startBlock($LANG_DB_BACKUP['last_ten_backups'], '',
-        //                    COM_getBlockTemplate('_admin_block', 'header'));
-        /*$retval .= ADMIN_createMenu(
-            $menu_arr,
-            "<p>{$LANG_DB_BACKUP['db_explanation']}</p>" .
-            '<p>' . sprintf($LANG_DB_BACKUP['total_number'], $index) . '</p>',
-            $_CONF['layout_url'] . '/images/icons/database.' . $_IMAGE_TYPE
-        );*/
         $retval .= DBADMIN_menu("<p>{$LANG_DB_BACKUP['db_explanation']}</p><p>" 
             . sprintf($LANG_DB_BACKUP['total_number'], $index) . '</p>');
 
@@ -165,7 +156,7 @@ function DBADMIN_list()
         );
 
         $text_arr = array(
-            'form_url' => $thisUrl
+            'form_url' => LGLIB_ADMIN_URL,
         );
         $form_arr = array('bottom' => '', 'top' => '');
         if ($num_backups > 0) {
@@ -189,11 +180,11 @@ function DBADMIN_list()
     return $retval;
 }
 
+
 /**
-* Perform database backup
+*   Perform database backup
 *
-* @return   string      HTML success or error message
-*
+*   @return string  HTML success or error message
 */
 function DBADMIN_backup()
 {
@@ -225,7 +216,6 @@ function DBADMIN_backup()
             $canExec = @file_exists($_DB_mysqldump_path);
         }
         if ($canExec) {
-            //DBADMIN_execWrapper($command);
             DBADMIN_exec($command);
             // See if we got a backup file, and if it's reasonable (size > 1KB)
             if (file_exists($backupfile) && filesize($backupfile) > 1024) {
@@ -257,11 +247,11 @@ function DBADMIN_backup()
 }
 
 /**
-* Download a backup file
+*   Download a backup file
 *
-* @param    string  $file   Filename (without the path)
-* @return   void
-* @note     Filename should have been sanitized and checked before calling this.
+*   @param  string  $file   Filename (without the path)
+*   @return void
+*   @note   Filename should have been sanitized and checked before calling this.
 *
 */
 function DBADMIN_download($file)
@@ -285,6 +275,13 @@ function DBADMIN_download($file)
     $dl->downloadFile($file);
 }
 
+
+/**
+*   Execute the backup request
+*
+*   @param  string  mysqldump command
+*   @return boolean True on success, Fale on failure
+*/
 function DBADMIN_exec($cmd) {
     global $_CONF, $_DB_pass;
 
@@ -315,22 +312,15 @@ function DBADMIN_exec($cmd) {
     //return array($results, $status);
 }
 
-/*function DBADMIN_execWrapper($cmd) {
 
-    list($results, $status) = DBADMIN_exec($cmd);
-
-    if ( $status == 0 ) {
-        return true;
-    } else {
-        COM_errorLog("DBADMIN_execWrapper: Failed Command: " . $cmd);
-        return false;
-    }
-}*/
-
-
+/**
+*   Provide an interface to configure backups
+*
+*   @return string  HTML for configuration function
+*/
 function DBADMIN_configBackup()
 {
-    global $_TABLES, $_CONF, $_VARS;
+    global $_TABLES, $_CONF, $_VARS, $LANG_LGLIB, $pi_title;
 
     $res = DB_query('SHOW TABLES');
     $mysql_tables = array();
@@ -342,7 +332,7 @@ function DBADMIN_configBackup()
 
     $exclude_tables = @unserialize($_VARS['lglib_dbback_exclude']);
     if (!is_array($exclude_tables))
-        $exclude_tables = array($exclude_tables);
+        $exclude_tables = array();
     $curr_interval = (int)$_VARS['lglib_dbback_cron'];
     if ($curr_interval == '-1') {
         $interval_disabled = ' disbled="disabled" ';
@@ -355,14 +345,9 @@ function DBADMIN_configBackup()
             $_VARS['lglib_dbback_gzip'] == 1) ? ' checked="checked" ' : '';
         
     $max_files = (int)$_VARS['lglib_dbback_files'];
-
-    //$current_arr = @unserialize($current_str);
-    //$current_arr = explode('|', $current_str);
-    //if (!$current_arr) $current_arr = array();
-
     $cols = 3;
 
-    $retval = DBADMIN_menu('Only database tables which exist and are actually used by glFusion are displayed.  To remove tables from the backup, move them into the right pane.');
+    $retval = DBADMIN_menu($LANG_LGLIB['instr_db_bkup_config']);
 
     $T = new Template(LGLIB_PI_PATH . '/templates');
     $T->set_file('dbform', 'db_backup.thtml');
@@ -504,7 +489,7 @@ default:
     break;
 }
 
-$display .= COM_siteHeader('menu', $LANG_DB_BACKUP['last_ten_backups']);
+$display .= COM_siteHeader('menu', $pi_title);
 $display .= $content;
 $display .= COM_siteFooter();
 

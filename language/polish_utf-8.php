@@ -17,6 +17,8 @@
 *   @global array $LANG_LGLIB
 */
 $LANG_LGLIB = array(
+    'list_backups' => 'List Backups',
+    'instr_db_bkup_config' => 'Only database tables which exist and are actually used by glFusion are displayed.  To remove tables from the backup, move them into the right pane.',
     'system_message'    => 'System Message',
     'nameparser_suffixes' => array(
         'I', 'II', 'III', 'IV', 'V',
