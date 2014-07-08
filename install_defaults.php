@@ -34,6 +34,7 @@ $_LGLIB_DEFAULTS = array(
     // $_CONF['site_url']/lglib/...
     'img_disp_relpath' => 'data/imgcache',
     'cron_schedule_interval' => 0,
+    'cron_key' => md5(time() . rand()),
 );
 
 /**
