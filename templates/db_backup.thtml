@@ -1,0 +1,69 @@
+{# begin {templatelocation} #}
+<script type="text/JavaScript" src="{site_url}/javascript/moveusers.js"></script>
+<form action="" method="POST">
+<table width="99%" cellspacing="0" cellpadding="0" style="padding:15px;">
+  <tr>
+    <td class="blocktitle alignright" style="padding:5px 40px 5px 5px;">Include in Backups</td>
+    <td>&nbsp;</td>
+    <td class="blocktitle alignleft" style="padding:5px 5px 5px 20px;">Exclude from Backups</td>
+  </tr>
+  <tr>
+    <td class="alignright" width="40%" style="padding-right:5px;">
+      <select multiple="multiple" size="10" name="fieldFrom"
+            style="width: 15em; height: 20em; padding: 2px;" 
+            ondblclick="moveSelectedOptions(this.form['fieldFrom'],this.form['fieldTo'],false)">
+            {included_tables}
+      </select>
+    </td>
+    <td class="aligncenter">
+      <input type="button" name="right" value="Exclude >>" 
+        onclick="moveSelectedOptions(this.form['fieldFrom'],this.form['fieldTo'],false)" />
+      <br /><br />
+      <input type="button" name="left" value="<< Include" 
+        onclick="moveSelectedOptions(this.form['fieldTo'],this.form['fieldFrom'],false)" />
+    </td>
+    <td width="40%" class="alignleft" style="padding-left:5px;">
+      <select multiple="multiple" size="10" name="fieldTo"
+            style="width: 15em; height: 20em; padding: 2px;" 
+            ondblclick="moveSelectedOptions(this.form['fieldTo'],this.form['fieldFrom'],false)">
+      {excluded_tables}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>Scheduled Backup Interval:</td>
+    <td colspan="2">
+      <input type="text" name="db_backup_interval" {interval_disabled} 
+        value="{curr_interval}" /> seconds
+      <input type="checkbox" name="disable_cron" {chk_disable_cron}
+        onclick="this.form.db_backup_interval.disabled = this.checked;" 
+        /> Disable
+    </td>
+  </tr>
+  <!--
+  <tr>
+    <td>Mail scheduled backups to:</td>
+    <td colspan="2">
+      <input type="text" name="db_backup_sendto" value="{backup_mailto}" />
+    </td>
+  </tr>
+  --> 
+  <tr>
+    <td>Max. files to keep:</td>
+    <td colspan="2">
+      <input type="text" name="db_backup_maxfiles" value="{max_files}" 
+        /> ("0" to disable purging.)
+    </td>
+  </tr>
+  <tr>
+    <td>Use GZip if available? </td>
+    <td colspan="2">
+      <input type="checkbox" name="use_gzip" {chk_gzip} />
+    </td>
+  </tr>
+</table>
+<input type="hidden" name="groupmembers" />
+<input type="submit" value="Save" name="saveconfig" 
+    onclick="return setUsers(this.form)" />
+</form>
+{# end {templatelocation} #}
