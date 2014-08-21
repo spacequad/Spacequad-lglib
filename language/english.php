@@ -53,6 +53,8 @@ $LANG_confignames['lglib'] = array(
     'img_disp_relpath' => 'Path to display images',
     'cron_schedule_interval' => 'Scheduled Task Interval',
     'cron_key' => 'Scheduled Task Security Key',
+    'img_cache_interval' => 'Image Cache Cleaning Interval (minutes)',
+    'img_cache_maxage' => 'Cached Image Max Age (days)',
 );
 
 $LANG_configsubgroups['lglib'] = array(

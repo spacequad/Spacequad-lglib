@@ -58,7 +58,17 @@ function LGLIB_do_upgrade($current_ver)
                 'text', 0, 0, 15, 40, true, $_LGLIB_CONF['pi_name']);
     }
 
-    return $error;
+    if ($current_ver < '0.0.6') {
+        // upgrade from 0.0.5 to 0.0.6
+        COM_errorLog("Updating Plugin to 0.0.6");
+        $c = config::get_instance();
+        $c->add('img_cache_interval', $_LGLIB_DEFAULTS['img_cache_interval'],
+                'text', 0, 0, 15, 50, true, $_LGLIB_CONF['pi_name']);
+        $c->add('img_cache_maxage', $_LGLIB_DEFAULTS['img_cache_maxage'],
+                'text', 0, 0, 15, 60, true, $_LGLIB_CONF['pi_name']);
+    }
+
+     return $error;
 }
 
 
