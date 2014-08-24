@@ -35,6 +35,8 @@ $_LGLIB_DEFAULTS = array(
     'img_disp_relpath' => 'data/imgcache',
     'cron_schedule_interval' => 0,
     'cron_key' => md5(time() . rand()),
+    'img_cache_maxage' => 90,          // days
+    'img_cache_interval' => 120, // minutes
 );
 
 /**
@@ -63,6 +65,10 @@ function plugin_initconfig_lglib()
                 'text', 0, 0, 15, 30, true, $_LGLIB_CONF['pi_name']);
         $c->add('cron_key', $_LGLIB_DEFAULTS['cron_key'],
                 'text', 0, 0, 15, 40, true, $_LGLIB_CONF['pi_name']);
+        $c->add('img_cache_interval', $_LGLIB_DEFAULTS['img_cache_interval'],
+                'text', 0, 0, 15, 50, true, $_LGLIB_CONF['pi_name']);
+        $c->add('img_cache_maxage', $_LGLIB_DEFAULTS['img_cache_maxage'],
+                'text', 0, 0, 15, 60, true, $_LGLIB_CONF['pi_name']);
      }
 
      return true;

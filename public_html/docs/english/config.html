@@ -57,6 +57,20 @@ popup calendar.<br /><br />
       </td>
     </tr>
 
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_img_cache_interval"></a>Image Cache Cleaning Interval</td>
+      <td class="col1 leftalign">
+        Enter a number of minutes to wait between cache cleaning cycles. To minimize load and wait time for the visitor, the image cache is only cleaned every X minutes and only one cache directory out of 16 is cleaned at a time. Enter zero to disable cache cleaning.
+      </td>
+    </tr>
+
+    <tr class="row0">
+      <td class="col0 leftalign" valign="top"><a name="desc_img_cache_maxage"></a>Cached Image Max Age</td>
+      <td class="col1 leftalign">
+        Enter the number of days that a cached image may remain before being automatically removed. A small number here will keep disk usage low, but may increase wait times for visitors as images are recreated. A value of zero disables cache cleaning.
+      </td>
+    </tr>
+
   </tbody>
 </table>
 

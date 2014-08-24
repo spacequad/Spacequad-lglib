@@ -867,10 +867,10 @@ function LGLIB_titleCase($str)
 *   @param  string  $orig_path  Full path to the original image
 *   @param  integer $width      Image width
 *   @param  integer $height     Image height
-*   @param  boolean $force      True to force image regeneration
+*   @param  mixed   $rnd        Optional random ID to force image recreation
 *   @return string              Full URL to the image, empty on error
 */
-function LGLIB_ImageUrl($orig_path, $width=0, $height=0, $force = false)
+function LGLIB_ImageUrl($orig_path, $width=0, $height=0, $rnd = 0)
 {
     global $_LGLIB_CONF, $_CONF;
 
@@ -884,18 +884,45 @@ function LGLIB_ImageUrl($orig_path, $width=0, $height=0, $force = false)
 
     // Separate the path and create a MD5 hash of its path and size
     $path_parts = pathinfo($orig_path);
-    $disp_fname = md5("$orig_path-$width-$height") . '.' . 
+    $disp_fname = md5("$rnd-$orig_path-$width-$height") . '.' . 
             $path_parts['extension'];
 
+    // Image path portion of url
+    $img_path = $_LGLIB_CONF['pi_name'] . '/' . $_LGLIB_CONF['img_disp_relpath'] .
+            '/' . $disp_fname[0];
+
     // Image url relative to display base url
-    $disp_relurl = $_LGLIB_CONF['pi_name'] . '/' . $_LGLIB_CONF['img_disp_relpath'] .
-            '/' . $disp_fname[0] . '/' . $disp_fname;
+    $disp_relurl = $img_path . '/' . $disp_fname;
 
     // Display image full path, for checking file_exists and storing resized
     $disp_fullpath = $_CONF['path_html'] . $disp_relurl;
 
+    $maxage = (int)$_LGLIB_CONF['img_cache_maxage'];
+    $interval = (int)$_LGLIB_CONF['img_cache_clean_interval'];
+    if ($maxage > 0 && $interval > 0) {
+        // Clean up old files
+        // Get absolute path for flag file and finding old cache files
+        $img_path = $_CONF['path_html'] . $img_path;
+
+        $lastCleanFile = $img_path . '/.lastclean.touch';
+        if (!is_file($lastCleanFile)) {
+            @touch($lastCleanFile);
+        }
+        if (@filemtime($lastCleanFile) < ((time() - $interval) * 60)) {
+            $files = glob($img_path . '/*');
+            if ($files) {
+                $timeAgo = time() - ($maxage * 86400);
+                foreach ($files as $file) {
+                    if (@filemtime($file) < $timeAgo) {
+                        @unlink($file);
+                    }
+                }
+            }
+        }
+    }
+
     // If the file isn't found, try to create it.
-    if ($force || !is_file($disp_fullpath)) {
+    if (!is_file($disp_fullpath)) {
         // Found an error with getting exif into in IMG_resizeImage(),
         // use less-robust version in lgImage instead
         USES_lglib_class_image();
@@ -903,7 +930,7 @@ function LGLIB_ImageUrl($orig_path, $width=0, $height=0, $force = false)
         //USES_lib_image();
         //IMG_resizeImage($orig_path, $disp_fullpath, $width, $height);
     }
-        
+
     // If the file exists, return the full url.
     // If not, there's a problem and the empty url will be returned.
     if (is_file($disp_fullpath)) {
@@ -911,6 +938,24 @@ function LGLIB_ImageUrl($orig_path, $width=0, $height=0, $force = false)
     }
     
     return $url;
+}
+
+
+/**
+*   Obfuscate a string (e.g. email address) so it can be displayed safely.
+*   Borrowed from Dokuwiki's configuration.
+*
+*   @param  string  $str    String to obfuscate
+*   @param  string  $p2     Remainder of string after first whitespace
+*   @return string          Obfuscated email address.
+*/
+function LGLIB_obfuscate($str)
+{
+    $encode = '';
+    for ($x=0; $x < strlen($str); $x++) {
+        $encode .= '&#x' . bin2hex($str[$x]).';';
+    }
+    return $encode;
 }
 
 ?>
